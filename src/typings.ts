@@ -1,3 +1,4 @@
+// One entry of ticker data response object structure from the API
 export type TickerDay = {
 	date: Date,
 	close: number,
@@ -14,11 +15,12 @@ export type TickerDay = {
 	splitFactor: number
 };
 
-export type TickerSMACollection = {
-	slice: TickerDay[],
-	average: number
+// This is an object in case more data should be provided for each point
+export type TickerCollection = {
+	slice: TickerDay[]
 };
 
+// Ticker metadata response object structure from the API
 export type TickerMetadata = {
 	description: string,
 	startDate: string,
