@@ -12,7 +12,6 @@ import {
 } from './utils.js';
 
 tf.enableProdMode();
-tf.data
 
 const tickerRaw = process.argv[2] ?? 'TSLA';
 
