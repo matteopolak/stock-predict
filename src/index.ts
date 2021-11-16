@@ -5,10 +5,10 @@ import colours from 'colors/safe.js';
 import {
 	fetchTickerHistory,
 	fetchTickerMetadata,
-	calculateSimpleMovingAverage,
 	splitData,
 	trainModel,
-	predict
+	predict,
+	createMovingWindow
 } from './utils.js';
 
 tf.enableProdMode();
@@ -35,9 +35,9 @@ const { content: history, size } = await fetchTickerHistory(company.ticker);
 
 console.log(`     ${colours.bold(colours.green('✓'))}  Fetched ${colours.italic(`${history!.length.toString()} entries`)} (${(size / 1024).toFixed(2)} KB) for ${colours.bold(colours.white(company.ticker))} (${colours.bold(colours.white(company.name))})`);
 
-// Calculate SMA and split into test/training sets (100% in training right now)
+// Create moving window (like SMA without the average) for each data point
 const [ train, _ ] = splitData(
-	calculateSimpleMovingAverage(
+	createMovingWindow(
 		history!
 	),
 	1
@@ -65,9 +65,11 @@ const path = `${process.cwd().replaceAll('\\\\', '\\')}\\models\\${name}`;
 const tomorrow = new Date(history!.at(-1)!?.date.getTime() + 86400000).toISOString().slice(0, 10);
 
 process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Saving model to ${colours.bold(colours.white(path))}\r`);
-await model.save(`file://./models/${name}`);
-console.log(`     ${colours.bold(colours.green('✓'))}  Saved model to ${colours.bold(colours.white(path))} `);
 
+// Save the model
+await model.save(`file://./models/${name}`);
+
+console.log(`     ${colours.bold(colours.green('✓'))}  Saved model to ${colours.bold(colours.white(path))} `);
 process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Predicting price of ${colours.bold(colours.white(company.ticker))} for ${colours.bold(colours.white(tomorrow))}\r`);
 
 // Predict the next price

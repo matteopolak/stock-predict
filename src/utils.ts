@@ -20,16 +20,19 @@ import {
 } from './constants.js';
 
 import type { Sequential, Tensor, Rank } from '@tensorflow/tfjs-node';
-import type { TickerDay, TickerSMACollection, TickerMetadata } from './typings.js';
+import type { TickerDay, TickerCollection, TickerMetadata } from './typings.js';
 
+// Creates a URL with the ticker from which to fetch stock history data
 export function formatDataEndpointURL(ticker: string): string {
   return DATA_ENDPOINT_URL.replace('{ticker}', ticker);
 }
 
+// Creates a URL with the ticker from which to fetch ticker metadata
 export function formatMetadataEndpointURL(ticker: string): string {
 	return METADATA_ENDPOINT_URL.replace('{ticker}', ticker);
 }
 
+// Fetches ticker metadata (description, name, start & end dates)
 export async function fetchTickerMetadata(ticker: string): Promise<TickerMetadata | null> {
 	const response = await axios
 		.get<TickerMetadata>(formatMetadataEndpointURL(ticker))
@@ -60,22 +63,13 @@ export async function fetchTickerHistory(ticker: string): Promise<{ content: Tic
 	};
 }
 
-// Calculate the SMA (simple moving average) of each data point
-export function calculateSimpleMovingAverage(data: TickerDay[], windowSize: number = WINDOW_SIZE): TickerSMACollection[] {
-	const computed: TickerSMACollection[] = [];
+// Create a window of windowSize length, where each window is shifted by the index
+export function createMovingWindow(data: TickerDay[], windowSize: number = WINDOW_SIZE): TickerCollection[] {
+	const computed: TickerCollection[] = [];
 
 	for (let i = 0; i <= data.length - windowSize; ++i) {
-		let current = 0;
-
-		const boundary = i + windowSize;
-
-		for (let x = i; x < boundary && x <= data.length; ++x) {
-			current += data[i].adjClose / windowSize;
-		}
-
 		computed.push({
-			slice: data.slice(i, i + windowSize),
-			average: current
+			slice: data.slice(i, i + windowSize)
 		});
 	}
 
@@ -83,7 +77,7 @@ export function calculateSimpleMovingAverage(data: TickerDay[], windowSize: numb
 }
 
 // By default, 80% of data will be used for training, and 20% for testing
-export function splitData(data: TickerSMACollection[], splitPercentage: number = 0.8): [ TickerSMACollection[], TickerSMACollection[] ] {
+export function splitData(data: TickerCollection[], splitPercentage: number = 0.8): [ TickerCollection[], TickerCollection[] ] {
 	const first = Math.floor(data.length * splitPercentage);
 
 	return [
