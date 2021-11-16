@@ -166,10 +166,11 @@ export async function predict(model: Sequential, inputs: number[][]) {
 		tf.scalar(10)
 	);
 
-	console.log('predict');
 	const prediction: Tensor<Rank> = model.predict(tensor) as Tensor<Rank>;
 
-	return [...tf.mul(prediction, 10).dataSync()];
+		console.log([...prediction.dataSync()]);
+
+	return [...tf.mul(prediction, tf.scalar(10)).dataSync()];
 }
 
 export function calculateDigitCount(number: number) {
