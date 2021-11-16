@@ -2,10 +2,10 @@
 
 export const DATA_ENDPOINT_URL: string = 'https://api.tiingo.com/tiingo/daily/{ticker}/prices?startDate=1000-1-1&endDate=9999-1-1&token=7f5d93a97c46f7b3f8ad0e8b0a770031822e81ee';
 export const METADATA_ENDPOINT_URL: string = 'https://api.tiingo.com/tiingo/daily/{ticker}?token=7f5d93a97c46f7b3f8ad0e8b0a770031822e81ee';
-export const WINDOW_SIZE: number = 12;
+export const WINDOW_SIZE: number = 30;
 
 export const NUM_EPOCHS: number = 50;
-export const LEARNING_RATE: number = 0.05;
+export const LEARNING_RATE: number = 0.03;
 export const NUM_HIDDEN_LAYERS: number = 4;
 export const NUM_ITEMS_PERCENT: number = 50;
 export const NUM_LAYER_NEURONS: number = 100;
