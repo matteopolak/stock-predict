@@ -181,11 +181,18 @@ export async function predict(model: Sequential, inputs: number[][]) {
 // Log base 10 of a number (floored) will return the # of digits
 // since the exponent of 10 when the number system is base 10 is the
 // number of digits
-export function calculateDigitCount(number: number) {
+export function calculateDigitCount(number: number): number {
 	return Math.floor(Math.log10(number));
 }
 
 // Solely visual, just fills zeros in front of a number
-export function fillZeros(number: number, length: number) {
+export function fillZeros(number: number, length: number): string {
 	return `${'0'.repeat(length - calculateDigitCount(number))}${number}`;
+}
+
+// Formats the bytes in the ticker message
+export function formatBytes(bytes: number): string {
+	return bytes <= 1024 ? `${bytes} B`
+		: bytes <= 1024 * 1024 ? `${(bytes / 1024).toFixed(2)} KB`
+		: `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 }

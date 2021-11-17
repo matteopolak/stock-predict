@@ -8,13 +8,14 @@ import {
 	splitData,
 	trainModel,
 	predict,
-	createMovingWindow
+	createMovingWindow,
+	formatBytes
 } from './utils.js';
 
 tf.enableProdMode();
 
 // Used to format numbers (eg. 1000000 -> 1,000,000)
-const formatter = new Intl.NumberFormat();
+const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
 
 // Get the ticker from CLI args, use TSLA as default
 const tickerRaw = process.argv[2] ?? 'TSLA';
@@ -33,7 +34,7 @@ if (company === null) {
 // Fetch all stock price history for the ticker
 const { content: history, size } = await fetchTickerHistory(company.ticker);
 
-console.log(`     ${colours.bold(colours.green('✓'))}  Fetched ${colours.italic(`${history!.length.toString()} entries`)} (${(size / 1024).toFixed(2)} KB) for ${colours.bold(colours.white(company.ticker))} (${colours.bold(colours.white(company.name))})`);
+console.log(`     ${colours.bold(colours.green('✓'))}  Fetched ${colours.italic(`${history!.length.toString()} entries`)} (${formatBytes(size)}) for ${colours.bold(colours.white(company.ticker))} (${colours.bold(colours.white(company.name))})`);
 
 // Create moving window (like SMA without the average) for each data point
 const [ train, _ ] = splitData(
