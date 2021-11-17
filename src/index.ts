@@ -9,13 +9,13 @@ import {
 	trainModel,
 	predict,
 	createMovingWindow,
-	formatBytes
+	formatBytes,
+	formatter
 } from './utils.js';
 
 tf.enableProdMode();
 
-// Used to format numbers (eg. 1000000 -> 1,000,000)
-const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+console.time('train');
 
 // Get the ticker from CLI args, use TSLA as default
 const tickerRaw = process.argv[2] ?? 'TSLA';
@@ -59,12 +59,13 @@ for (const [i, data] of train.entries()) {
 const estimate = inputs.pop()!;
 
 // Train the model
-const { model } = await trainModel(inputs, outputs);
+const { model, time } = await trainModel(inputs, outputs);
 
 const name = `${company.ticker.toLowerCase()}_${Date.now()}`;
 const path = `${process.cwd().replaceAll('\\\\', '\\')}\\models\\${name}`;
 const tomorrow = new Date(history!.at(-1)!?.date.getTime() + 86400000).toISOString().slice(0, 10);
 
+console.log(`     ${colours.bold(colours.green('✓'))}  Trained model in ${colours.bold(colours.white(`${formatter.format(time / 60000)} minutes`))}`);
 process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Saving model to ${colours.bold(colours.white(path))}\r`);
 
 // Save the model

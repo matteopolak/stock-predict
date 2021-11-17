@@ -4,7 +4,7 @@ export const DATA_ENDPOINT_URL: string = 'https://api.tiingo.com/tiingo/daily/{t
 export const METADATA_ENDPOINT_URL: string = 'https://api.tiingo.com/tiingo/daily/{ticker}?token=7f5d93a97c46f7b3f8ad0e8b0a770031822e81ee';
 export const WINDOW_SIZE: number = 12;
 
-export const NUM_EPOCHS: number = 200;
+export const NUM_EPOCHS: number = 100;
 export const LEARNING_RATE: number = 0.0016;
 export const NUM_HIDDEN_LAYERS: number = 3;
 export const NUM_ITEMS_PERCENT: number = 50;

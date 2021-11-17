@@ -22,6 +22,9 @@ import {
 import type { Sequential, Tensor, Rank } from '@tensorflow/tfjs-node';
 import type { TickerDay, TickerCollection, TickerMetadata } from './typings.js';
 
+// Used to format numbers (eg. 1000000 -> 1,000,000)
+export const formatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+
 // Creates a URL with the ticker from which to fetch stock history data
 export function formatDataEndpointURL(ticker: string): string {
   return DATA_ENDPOINT_URL.replace('{ticker}', ticker);
@@ -133,12 +136,13 @@ export async function trainModel(inputs: number[][], outputs: number[]) {
 		loss: 'meanSquaredError'
 	});
 
-	let currentEpoch = 1;
+	let currentEpoch = 1, currentEpochStart = 0;
 
 	// Solely used to make the console look nice
 	const batchSize = Math.ceil(inputs.length / RNN_BATCH_SIZE);
 	const epochNumberLength = calculateDigitCount(NUM_EPOCHS);
 	const batchNumberLength = calculateDigitCount(batchSize);
+	const trainingTimeStart = Date.now();
 
 	// Fit the model to the input data
 	const history = await model.fit(xs, ys, {
@@ -150,18 +154,19 @@ export async function trainModel(inputs: number[][], outputs: number[]) {
 				process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Epoch ${colours.bold(colours.white(`#${fillZeros(currentEpoch, epochNumberLength)}`))}/${NUM_EPOCHS} | Batch ${colours.bold(colours.white(`#${fillZeros(batch + 1, batchNumberLength)}`))}/${batchSize}\r`);
 			},
 			onEpochBegin: epoch => {
+				currentEpochStart = Date.now();
 				currentEpoch = epoch + 1;
 
 				process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Epoch ${colours.bold(colours.white(`#${fillZeros(currentEpoch, epochNumberLength)}`))}/${NUM_EPOCHS} | Batch ${colours.bold(colours.white(`#${fillZeros(1, batchNumberLength)}`))}/${batchSize}\r`);
 			},
 			onEpochEnd: () => {
-				process.stdout.write(`     ${colours.bold(colours.green('✓'))}  Epoch ${colours.bold(colours.white(`#${fillZeros(currentEpoch, epochNumberLength)}`))}/${NUM_EPOCHS} | Batch ${colours.bold(colours.white(`#${batchSize}`))}/${batchSize}\n`);
+				process.stdout.write(`     ${colours.bold(colours.green('✓'))}  Epoch ${colours.bold(colours.white(`#${fillZeros(currentEpoch, epochNumberLength)}`))}/${NUM_EPOCHS} | Batch ${colours.bold(colours.white(`#${batchSize}`))}/${batchSize} ${colours.gray(`+${formatter.format((Date.now() - currentEpochStart) / 1000)}s`)}\n`);
 			}
 		}
 	});
 
 	return {
-		model, history
+		model, history, time: Date.now() - trainingTimeStart
 	};
 }
 
