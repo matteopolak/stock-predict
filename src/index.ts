@@ -34,7 +34,7 @@ if (company === null) {
 // Fetch all stock price history for the ticker
 const { content: history, size } = await fetchTickerHistory(company.ticker);
 
-console.log(`     ${colours.bold(colours.green('✓'))}  Fetched ${colours.italic(`${history!.length.toString()} entries`)} (${formatBytes(size)}) for ${colours.bold(colours.white(company.ticker))} (${colours.bold(colours.white(company.name))})`);
+console.log(`     ${colours.bold(colours.green('✓'))}  Fetched ${colours.italic(`${history!.length.toString()} entries`)} (${formatBytes(size)}) for ${colours.bold(colours.white(`${company.exchangeCode}:${company.ticker}`))} (${colours.bold(colours.white(company.name))})`);
 
 // Create moving window (like SMA without the average) for each data point
 const [ train, _ ] = splitData(
@@ -71,8 +71,8 @@ process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Saving model 
 await model.save(`file://./models/${name}`);
 
 console.log(`     ${colours.bold(colours.green('✓'))}  Saved model to ${colours.bold(colours.white(path))} `);
-process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Predicting price of ${colours.bold(colours.white(company.ticker))} for ${colours.bold(colours.white(tomorrow))}\r`);
+process.stdout.write(`     ${colours.bold(colours.yellow('…'))}  Predicting price of ${colours.bold(colours.white(`${company.exchangeCode}:${company.ticker}`))} for ${colours.bold(colours.white(tomorrow))}\r`);
 
 // Predict the next price
 const prediction = await predict(model, [ estimate ]);
-console.log(`     ${colours.bold(colours.green('✓'))}  The price of ${colours.bold(colours.white(company.ticker))} for ${colours.bold(colours.white(`${tomorrow} EOD`))} is estimated at ${colours.bold(`${colours.white(`$`)}${colours.green(formatter.format(prediction[0]))}`)}`);
+console.log(`     ${colours.bold(colours.green('✓'))}  The price of ${colours.bold(colours.white(`${company.exchangeCode}:${company.ticker}`))} for ${colours.bold(colours.white(`${tomorrow} EOD`))} is estimated at ${colours.bold(`${colours.white(`$`)}${colours.green(formatter.format(prediction[0]))}`)}`);

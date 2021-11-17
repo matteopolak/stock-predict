@@ -5,12 +5,14 @@
 	* [NVIDIA Cuda](https://developer.nvidia.com/cuda-downloads) & [NVIDIA cuDNN](https://developer.nvidia.com/cudnn) (for NVIDIA graphics cards)
 	* [OpenCL](https://www.khronos.org/opencl/) (must build TensorFlow with [SYCL](https://www.khronos.org/sycl/) or [triSYCL](https://github.com/triSYCL/triSYCL) support)
 
-### Installing
+### Closing
 ```shell
 $ git clone https://github.com/matteopolak/stock-predict.git
-$ cd stock-predict
-$ npm install --global yarn
-$ yarn install
+```
+
+### Installing
+```shell
+$ yarn install # or `npm install`
 ```
 
 ### Building (with TypeScript)

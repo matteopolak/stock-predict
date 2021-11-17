@@ -112,6 +112,7 @@ export async function trainModel(inputs: number[][], outputs: number[]) {
 	}
 
 	// Add a `recurrent neural network` layer (https://towardsdatascience.com/illustrated-guide-to-recurrent-neural-networks-79e5eb8049c9)
+	// of LSTM cells (one cell per hidden layer)
 	model.add(tf.layers.rnn({
 		cell: lstmCells,
 		inputShape: RNN_INPUT_SHAPE,
