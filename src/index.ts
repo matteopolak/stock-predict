@@ -15,8 +15,6 @@ import {
 
 tf.enableProdMode();
 
-console.time('train');
-
 // Get the ticker from CLI args, use TSLA as default
 const tickerRaw = process.argv[2] ?? 'TSLA';
 
