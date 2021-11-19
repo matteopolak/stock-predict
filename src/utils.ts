@@ -136,9 +136,6 @@ export async function trainModel(inputs: number[][], outputs: number[]) {
 		loss: 'meanSquaredError'
 	});
 
-	console.log(model.summary(undefined, undefined, console.log));
-	process.exit();
-
 	let currentEpoch = 1, currentEpochStart = 0;
 
 	// Solely used to make the console look nice
