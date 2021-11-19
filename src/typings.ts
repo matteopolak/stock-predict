@@ -1,5 +1,5 @@
 // One entry of ticker data response object structure from the API
-export type TickerDay = {
+export interface TickerDay {
 	date: Date,
 	close: number,
 	high: number,
@@ -16,12 +16,12 @@ export type TickerDay = {
 };
 
 // This is an object in case more data should be provided for each point
-export type TickerCollection = {
+export interface TickerCollection {
 	slice: TickerDay[]
 };
 
 // Ticker metadata response object structure from the API
-export type TickerMetadata = {
+export interface TickerMetadata {
 	description: string,
 	startDate: string,
 	endDate: string,
